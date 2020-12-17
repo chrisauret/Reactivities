@@ -27,13 +27,25 @@ namespace API
             {
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
+
             services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
-                });
-            });
+           {
+               opt.AddPolicy(name: "CorsPolicy",
+                                 builder =>
+                                 {
+                                     builder
+                                        .AllowAnyMethod()
+                                        .AllowAnyHeader()
+                                        .WithOrigins("http://localhost:3000").AllowCredentials();
+                                 });
+               //opt.AddDefaultPolicy(
+               //    builder =>
+               //    {
+               //        builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+               //    });
+
+           });
+            // services.AddResponseCaching();
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -56,9 +68,11 @@ namespace API
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseCors("CorsPolicy");
+
+            // app.UseResponseCaching();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
