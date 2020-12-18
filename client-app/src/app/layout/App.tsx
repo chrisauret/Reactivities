@@ -10,7 +10,7 @@ const App = () => {
   const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
 
   const handleSelectActivity = (id: string) => {
-    setSelectedActivity(activities.filter(x => x.id)[0]);
+    setSelectedActivity(activities.filter(x => x.id === id)[0]);
   }
 
   useEffect(() => {
