@@ -1,12 +1,16 @@
-import React, { useState, useEffect, Fragment, SyntheticEvent } from 'react';
+import React, { useState, useEffect, useContext, Fragment, SyntheticEvent } from 'react';
 import { Container, List } from 'semantic-ui-react'
 import { IActivity } from '../../models/activity';
 import NavBar from '../../features/navbar';
 import { ActivityDashboard } from '../../features/activities/dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import { LoadingComponent } from './LoadingComponent';
+import ActivityStore from '../stores/activityStore';
 
 const App = () => {
+
+  const activityStore = useContext(ActivityStore);
+
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
   const [editMode, setEditMode] = useState(false);
@@ -69,7 +73,7 @@ const App = () => {
         response.forEach(activity => {
           activity.date = activity.date.split('.')[0];
           activities.push(activity)
-        })
+        });
         setActivities(activities);
       })
       .then(() => setLoading(false));
@@ -82,6 +86,9 @@ const App = () => {
 
       <NavBar openCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: '7em' }}>
+
+        <h1>{activityStore.title}</h1>
+
         <List>
           <ActivityDashboard
             activities={activities}
