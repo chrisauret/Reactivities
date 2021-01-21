@@ -9,7 +9,7 @@ class ActivityStore {
 
     activityRegistry = new Map();
     activities: IActivity[] = [];
-    selectedActivity: IActivity | undefined;
+    activity: IActivity | null = null;
     loadingInitial = false;
     editMode = false;
     submitting = false;
@@ -19,7 +19,7 @@ class ActivityStore {
         makeObservable(this, {
             activityRegistry: observable,
             activities: observable,
-            selectedActivity: observable,
+            activity: observable,
             loadingInitial: observable,
             editMode: observable,
             submitting: observable,
@@ -32,7 +32,8 @@ class ActivityStore {
             openCreateForm: action,
             cancelSelectedActivity: action,
             cancelFormOpen: action,
-            selectActivity: action
+            selectActivity: action,
+            clearActivity: action
         });
     }
 
@@ -68,6 +69,39 @@ class ActivityStore {
         }
     }
 
+    loadActivity = async (id: string) => {
+        let activity = this.getActivity(id);
+        if (activity) {
+            this.activity = activity;
+        } else {
+            this.loadingInitial = true;
+
+            try {
+
+                activity = await Activities.details(id);
+                runInAction(() => {
+                    this.activity = activity;
+                    this.loadingInitial = false;
+                })
+
+            } catch (error) {
+
+                runInAction(() => {
+                    this.loadingInitial = false;
+                })
+                console.log(error);
+            }
+        }
+    }
+
+    clearActivity = () => {
+        this.activity = null;
+    }
+
+    getActivity = (id: string) => {
+        return this.activityRegistry.get(id);
+    }
+
     createActivity = async (activity: IActivity) => {
         this.submitting = true;
         try {
@@ -89,17 +123,17 @@ class ActivityStore {
     openCreateForm = () => {
         runInAction(() => {
             this.editMode = true;
-            this.selectedActivity = undefined;
+            this.activity = null;
         });
     }
 
     openEditForm = (id: string) => {
-        this.selectedActivity = this.activityRegistry.get(id);
+        this.activity = this.activityRegistry.get(id);
         this.editMode = true;
     }
 
     cancelSelectedActivity = () => {
-        this.selectedActivity = undefined;
+        this.activity = null;
     }
 
     cancelFormOpen = () => {
@@ -108,7 +142,7 @@ class ActivityStore {
 
 
     selectActivity = (id: string) => {
-        this.selectedActivity = this.activityRegistry.get(id);
+        this.activity = this.activityRegistry.get(id);
         this.editMode = false;
     }
 
@@ -118,7 +152,7 @@ class ActivityStore {
             await Activities.update(activity);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
-                this.selectedActivity = activity;
+                this.activity = activity;
                 this.editMode = false;
                 this.submitting = false;
             });

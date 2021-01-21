@@ -1,37 +1,51 @@
-import React, { FormEvent, useContext, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import { Segment, Form, Button } from 'semantic-ui-react'
 import { IActivity } from '../../../models/activity'
 import ActivityStore from '../../../app/stores/activityStore'
 import { v4 as uuid } from 'uuid'
 import { observer } from 'mobx-react-lite'
+import { RouteComponentProps } from 'react-router-dom'
 
-interface IProps {
-    activity: IActivity;
+
+interface DetailParams {
+    id: string;
 }
 
-const ActivityForm: React.FC<IProps> = ({
-    activity: initialFormState,
-}) => {
+const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) => {
 
-    const { createActivity, editActivity, submitting, cancelFormOpen } = useContext(ActivityStore);
+    const {
+        createActivity,
+        editActivity,
+        submitting,
+        cancelFormOpen,
+        activity: initialFormState,
+        loadActivity,
+        clearActivity
+    } = useContext(ActivityStore);
 
-    const initializeForm = () => {
-        if (initialFormState) {
-            return initialFormState;
+    useEffect(() => {
+        if (match.params.id) {
+            loadActivity(match.params.id)
+                .then(() => initialFormState && setActivity(initialFormState));
         }
 
-        return {
-            id: '',
-            title: '',
-            category: '',
-            description: '',
-            date: '',
-            city: '',
-            venue: ''
-        };
-    }
+        // When unmount this component, set Activity in the store to null.
+        return () => {
+            clearActivity();
+        }
 
-    const [activity, setActivity] = useState<IActivity>(initializeForm);
+    }, [loadActivity, clearActivity, match.params.id, initialFormState]); // Add in the dependencies otherwise this will run all the time. 
+    // TIP:  adding an empty array will cause it to only run once
+
+    const [activity, setActivity] = useState<IActivity>({
+        id: '',
+        title: '',
+        category: '',
+        description: '',
+        date: '',
+        city: '',
+        venue: ''
+    });
 
     const handleSubmit = () => {
 

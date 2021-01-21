@@ -1,11 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Button, Card, Image } from 'semantic-ui-react'
 import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { LoadingComponent } from '../../../app/layout/LoadingComponent'
 
-const ActivityDetails = () => {
 
-    const { selectedActivity: activity, openEditForm, cancelSelectedActivity } = useContext(ActivityStore);
+interface DatailParams {
+    id: string
+}
+
+const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, history }) => {
+
+    const { activity, openEditForm, cancelSelectedActivity, loadActivity, loadingInitial } = useContext(ActivityStore);
+
+    useEffect(() => {
+        loadActivity(match.params.id)
+    }, [loadActivity]);
+    // If you leave this off -',[loadActivity]', then it will run every time the component re-renders. Which is not what I want. I only want it to run once when the componentn mounts.
+
+    if (loadingInitial || !activity) return <LoadingComponent content='Loading activity...' />
 
     return (
         <Card fluid>
@@ -21,8 +35,19 @@ const ActivityDetails = () => {
             </Card.Content>
             <Card.Content extra>
                 <Button.Group widths={2}>
-                    <Button basic color='blue' content='Edit' onClick={() => openEditForm(activity!.id)} />
-                    <Button basic color='grey' content='Cancel' onClick={cancelSelectedActivity} />
+                    <Button
+                        as={Link} to={`/manage/${activity.id}`}
+                        basic
+                        color='blue'
+                        content='Edit'
+                        onClick={() => openEditForm(activity!.id)}
+                    />
+                    <Button
+                        basic
+                        color='grey'
+                        content='Cancel'
+                        onClick={() => history.push('/activities')}
+                    />
                 </Button.Group>
             </Card.Content>
         </Card>

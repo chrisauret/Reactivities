@@ -8,7 +8,7 @@ import ActivityStore from '../../../app/stores/activityStore'
 
 const ActivityDashboard = () => {
 
-    const { editMode, selectedActivity } = useContext(ActivityStore);
+    const { editMode, activity } = useContext(ActivityStore);
 
     return (
         <Grid>
@@ -16,15 +16,7 @@ const ActivityDashboard = () => {
                 <ActivityList />
             </Grid.Column>
             <Grid.Column width={6}>
-                {selectedActivity && !editMode && (
-                    <ActivityDetails />
-                )}
-                {editMode && (
-                    <ActivityForm
-                        key={(selectedActivity && selectedActivity.id) || 0}
-                        activity={selectedActivity!}
-                    />
-                )}
+                <h2>Activity filters</h2>
             </Grid.Column>
         </Grid >
     );
