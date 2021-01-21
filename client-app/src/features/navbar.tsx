@@ -3,7 +3,6 @@ import React, { useContext } from 'react'
 import { Button, Container, Menu } from 'semantic-ui-react';
 import ActivityStore from '../app/stores/activityStore'
 
-
 const NavBar = () => {
 
     const activityStore = useContext(ActivityStore);
