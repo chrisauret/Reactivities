@@ -8,20 +8,16 @@ configure({ enforceActions: 'always' });
 class ActivityStore {
 
     activityRegistry = new Map();
-    activities: IActivity[] = [];
     activity: IActivity | null = null;
     loadingInitial = false;
-    editMode = false;
     submitting = false;
     target: string = '';
 
     constructor() {
         makeObservable(this, {
             activityRegistry: observable,
-            activities: observable,
             activity: observable,
             loadingInitial: observable,
-            editMode: observable,
             submitting: observable,
             target: observable,
             activitiesByDate: computed,
@@ -30,19 +26,28 @@ class ActivityStore {
             createActivity: action,
             deleteActivity: action,
             openCreateForm: action,
-            cancelSelectedActivity: action,
-            cancelFormOpen: action,
-            selectActivity: action,
             clearActivity: action
         });
     }
 
     get activitiesByDate() {
 
-        console.log("Getting records: ", this.activityRegistry.values());
+        return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
+    }
 
-        return Array.from(this.activityRegistry.values())
-            .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    groupActivitiesByDate(activities: IActivity[]) {
+        const sortedActivities = activities.sort(
+            (a, b) => Date.parse(a.date) - Date.parse(b.date)
+        )
+
+        return Object.entries(sortedActivities.reduce((activities, activity) => {
+            const date = activity.date.split('T')[0];
+
+            activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+
+            return activities;
+
+        }, {} as { [key: string]: IActivity[] })); // 111
     }
 
     loadActivities = async () => {
@@ -50,15 +55,13 @@ class ActivityStore {
         try {
             const activities = await Activities.list();
             runInAction(() => {
-
-                console.log(activities);
-
                 activities.forEach((activity) => {
                     activity.date = activity.date.split('.')[0];
                     this.activityRegistry.set(activity.id, activity);
                 });
                 this.loadingInitial = false;
             });
+            console.log(this.groupActivitiesByDate(activities));
 
         } catch (error) {
             runInAction(() => {
@@ -108,7 +111,6 @@ class ActivityStore {
             await Activities.create(activity);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
-                this.editMode = false;
                 this.submitting = false;
             });
         } catch (error) {
@@ -122,29 +124,14 @@ class ActivityStore {
 
     openCreateForm = () => {
         runInAction(() => {
-            this.editMode = true;
             this.activity = null;
         });
     }
 
     openEditForm = (id: string) => {
         this.activity = this.activityRegistry.get(id);
-        this.editMode = true;
     }
 
-    cancelSelectedActivity = () => {
-        this.activity = null;
-    }
-
-    cancelFormOpen = () => {
-        this.editMode = false;
-    }
-
-
-    selectActivity = (id: string) => {
-        this.activity = this.activityRegistry.get(id);
-        this.editMode = false;
-    }
 
     editActivity = async (activity: IActivity) => {
         this.submitting = true;
@@ -153,7 +140,6 @@ class ActivityStore {
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
                 this.activity = activity;
-                this.editMode = false;
                 this.submitting = false;
             });
         } catch (error) {

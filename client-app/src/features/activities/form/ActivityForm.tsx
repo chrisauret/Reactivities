@@ -11,31 +11,16 @@ interface DetailParams {
     id: string;
 }
 
-const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) => {
+const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, history }) => {
 
     const {
         createActivity,
         editActivity,
         submitting,
-        cancelFormOpen,
         activity: initialFormState,
         loadActivity,
         clearActivity
     } = useContext(ActivityStore);
-
-    useEffect(() => {
-        if (match.params.id) {
-            loadActivity(match.params.id)
-                .then(() => initialFormState && setActivity(initialFormState));
-        }
-
-        // When unmount this component, set Activity in the store to null.
-        return () => {
-            clearActivity();
-        }
-
-    }, [loadActivity, clearActivity, match.params.id, initialFormState]); // Add in the dependencies otherwise this will run all the time. 
-    // TIP:  adding an empty array will cause it to only run once
 
     const [activity, setActivity] = useState<IActivity>({
         id: '',
@@ -47,6 +32,22 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
         venue: ''
     });
 
+    useEffect(() => {
+        if (match.params.id
+            // Don't call when submitting for editting
+            && activity.id.length === 0) {
+            loadActivity(match.params.id)
+                .then(() => initialFormState && setActivity(initialFormState));
+        }
+
+        // When unmount this component, set Activity in the store to null.
+        return () => {
+            clearActivity();
+        }
+
+    }, [loadActivity, clearActivity, match.params.id, initialFormState, activity.id.length]); // Add in the dependencies otherwise this will run all the time. 
+    // TIP:  adding an empty array will cause it to only run once
+
     const handleSubmit = () => {
 
         if (activity.id.length === 0) {
@@ -54,9 +55,13 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
                 ...activity,
                 id: uuid()
             }
-            createActivity(newActivity);
+            createActivity(newActivity).then(() => {
+                history.push(`/activities/${newActivity.id}`)
+            });
         } else {
-            editActivity(activity);
+            editActivity(activity).then(() => {
+                history.push(`/activities/${activity.id}`)
+            });
         }
     }
 
@@ -75,7 +80,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match }) =>
                 <Form.Input onChange={handleInputChange} name='city' placeholder='City' value={activity.city} />
                 <Form.Input onChange={handleInputChange} name='venue' placeholder='Venue' value={activity.venue} />
                 <Button loading={submitting} floated='right' positive type='submit' content='Submit' />
-                <Button floated='right' type='button' content='Cancel' onClick={cancelFormOpen} />
+                <Button floated='right' type='button' content='Cancel' onClick={ () => history.push('./activities')  } />
             </Form>
         </Segment>
     )

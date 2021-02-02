@@ -12,11 +12,11 @@ interface DatailParams {
 
 const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, history }) => {
 
-    const { activity, openEditForm, cancelSelectedActivity, loadActivity, loadingInitial } = useContext(ActivityStore);
+    const { activity, openEditForm, loadActivity, loadingInitial } = useContext(ActivityStore);
 
     useEffect(() => {
         loadActivity(match.params.id)
-    }, [loadActivity]);
+    }, [loadActivity, match.params.id]);
     // If you leave this off -',[loadActivity]', then it will run every time the component re-renders. Which is not what I want. I only want it to run once when the componentn mounts.
 
     if (loadingInitial || !activity) return <LoadingComponent content='Loading activity...' />
