@@ -16,7 +16,7 @@ interface DatailParams {
 
 const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, history }) => {
 
-    const { activity, openEditForm, loadActivity, loadingInitial } = useContext(ActivityStore);
+    const { activity, loadActivity, loadingInitial } = useContext(ActivityStore);
 
     useEffect(() => {
         loadActivity(match.params.id)
