@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
 import { LoadingComponent } from '../../../app/layout/LoadingComponent'
 import ActivityDetailesHeader from './ActivityDetailesHeader'
-import { ActivityDetailesSidebar } from './ActivityDetailesHeaderSidebar'
+import { ActivityDetailesSidebar } from './ActivityDetailesSidebar'
 import { ActivityDetailsChat } from './ActivityDetailsChat'
 import { ActivityDetailsInfo } from './ActivityDetailsInfo'
 
