@@ -29,7 +29,7 @@ const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, h
         <Grid>
             <Grid.Column width={10}>
                 <ActivityDetailesHeader activity={activity} />
-                <ActivityDetailsInfo />
+                <ActivityDetailsInfo activity={activity} />
                 <ActivityDetailsChat />
             </Grid.Column>
             <Grid.Column width={6}>
