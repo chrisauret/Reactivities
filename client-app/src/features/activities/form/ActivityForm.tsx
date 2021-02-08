@@ -71,9 +71,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
 
     const handleFinalFormSubmit = (values: any) => {
 
-        const dateAndTime = combineDateAndTime(values.date, values.time);
-        const { date, time, ...activity } = values;
-        activity.date = dateAndTime;
+        const dateAndTime = combineDateAndTime(values.date, values.time); //151
+        const { date, time, ...activity } = values; // Omit date and time from activity
+        activity.date = dateAndTime; // Add dateAndTime instead (i.e. dateAndTime replaces date, time)
         console.log(activity);
     }
 
@@ -110,14 +110,14 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
                                     <Field
                                         component={DateInput}
                                         name='date'
-                                        date={null}
+                                        date={true}
                                         placeholder='Date'
                                         value={activity.date}
                                     />
                                     <Field
                                         component={DateInput}
                                         name='time'
-                                        date={null}
+                                        time={true}
                                         placeholder='Time'
                                         value={activity.time}
                                     />
