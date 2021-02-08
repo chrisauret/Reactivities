@@ -75,7 +75,8 @@ class ActivityStore {
     loadActivity = async (id: string) => {
         let activity = this.getActivity(id);
         if (activity) {
-            this.activity = activity;
+            this.activity = activity
+            return activity;
         } else {
             this.loadingInitial = true;
 
@@ -86,7 +87,8 @@ class ActivityStore {
                     activity.date = new Date(activity.date);
                     this.activity = activity;
                     this.loadingInitial = false;
-                })
+                });
+                return activity;
 
             } catch (error) {
 

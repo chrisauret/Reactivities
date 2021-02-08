@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Segment, Form, Button, Grid } from 'semantic-ui-react'
-import { IActivityFormValues } from '../../../models/activity'
+import { ActivityFormValues, IActivityFormValues } from '../../../models/activity'
 import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
@@ -20,40 +20,27 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
 
     const {
         submitting,
-        activity: initialFormState,
         loadActivity,
-        clearActivity
     } = useContext(ActivityStore);
 
-    const [activity, setActivity] = useState<IActivityFormValues>({
-        id: undefined,
-        title: '',
-        category: '',
-        description: '',
-        date: undefined,
-        time: undefined,
-        city: '',
-        venue: ''
-    });
+    const [activity, setActivity] = useState(new ActivityFormValues());
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (match.params.id
-            // Don't call when submitting for editting
-            && activity.id) {
+        if (match.params.id) {
+            setLoading(true);
             loadActivity(match.params.id)
-                .then(() => initialFormState && setActivity(initialFormState));
+                .then((activity) => setActivity(new ActivityFormValues(activity)))
+                .finally(() => { setLoading(false); });
         }
-
-        // When unmount this component, set Activity in the store to null.
-        return () => {
-            clearActivity();
-        }
-
-    }, [loadActivity, clearActivity, match.params.id, initialFormState, activity.id]); // Add in the dependencies otherwise this will run all the time. 
+    }, [
+        loadActivity,
+        match.params.id,
+    ]);
+    // Add in the dependencies otherwise this will run all the time. 
     // TIP:  adding an empty array will cause it to only run once
 
     // const handleSubmit = () => {
-
     //     if (activity.id.length === 0) {
     //         let newActivity = {
     //             ...activity,
@@ -82,10 +69,11 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
             <Grid.Column width={10}>
                 <Segment clearing>
                     <FinalForm
+                        initialValues={activity}
                         onSubmit={handleFinalFormSubmit}
                         render={({ handleSubmit }) => (
 
-                            <Form onSubmit={handleSubmit}>
+                            <Form onSubmit={handleSubmit} loading={loading}>
                                 <Field
                                     component={TextInput}
                                     name='title'
@@ -134,8 +122,8 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
                                     placeholder='Venue'
                                     value={activity.venue}
                                 />
-                                <Button loading={submitting} floated='right' positive type='submit' content='Submit' />
-                                <Button floated='right' type='button' content='Cancel' onClick={() => history.push('./activities')} />
+                                <Button disabled={loading} loading={submitting} floated='right' positive type='submit' content='Submit' />
+                                <Button disabled={loading} floated='right' type='button' content='Cancel' onClick={() => history.push('./activities')} />
                             </Form>
                         )
                         }
