@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Segment, Form, Button, Grid } from 'semantic-ui-react'
-import { ActivityFormValues, IActivityFormValues } from '../../../models/activity'
+import { ActivityFormValues } from '../../../models/activity'
 import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
+import { v4 as uuid } from 'uuid'
 import { Form as FinalForm, Field } from 'react-final-form';
 import TextInput from '../../../app/common/form/TextInput'
 import TextAreaInput from '../../../app/common/form/TextAreaInput'
@@ -20,6 +21,8 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
 
     const {
         submitting,
+        createActivity,
+        editActivity,
         loadActivity,
     } = useContext(ActivityStore);
 
@@ -40,28 +43,21 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
     // Add in the dependencies otherwise this will run all the time. 
     // TIP:  adding an empty array will cause it to only run once
 
-    // const handleSubmit = () => {
-    //     if (activity.id.length === 0) {
-    //         let newActivity = {
-    //             ...activity,
-    //             id: uuid()
-    //         }
-    //         createActivity(newActivity).then(() => {
-    //             history.push(`/activities/${newActivity.id}`)
-    //         });
-    //     } else {
-    //         editActivity(activity).then(() => {
-    //             history.push(`/activities/${activity.id}`)
-    //         });
-    //     }
-    // }
-
     const handleFinalFormSubmit = (values: any) => {
 
         const dateAndTime = combineDateAndTime(values.date, values.time); //151
         const { date, time, ...activity } = values; // Omit date and time from activity
         activity.date = dateAndTime; // Add dateAndTime instead (i.e. dateAndTime replaces date, time)
-        console.log(activity);
+
+        if (!activity.id) {
+            let newActivity = {
+                ...activity,
+                id: uuid()
+            }
+            createActivity(newActivity);
+        } else {
+            editActivity(activity);
+        }
     }
 
     return (
@@ -122,8 +118,22 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({ match, hist
                                     placeholder='Venue'
                                     value={activity.venue}
                                 />
-                                <Button disabled={loading} loading={submitting} floated='right' positive type='submit' content='Submit' />
-                                <Button disabled={loading} floated='right' type='button' content='Cancel' onClick={() => history.push('./activities')} />
+                                <Button
+                                    disabled={loading}
+                                    loading={submitting}
+                                    floated='right'
+                                    positive type='submit'
+                                    content='Submit'
+                                />
+                                <Button
+                                    disabled={loading}
+                                    floated='right'
+                                    type='button'
+                                    content='Cancel'
+                                    onClick={activity.id
+                                        ? () => history.push(`/activities/${activity.id}`)
+                                        : () => history.push('/activities')}
+                                />
                             </Form>
                         )
                         }
