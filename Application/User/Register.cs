@@ -15,7 +15,7 @@ namespace Application.User
 {
     public class Register
     {
-        public class Command : IRequest
+        public class Command : IRequest<User>
         {
             public string DisplayName { get; set; }
             public string Username { get; set; }
