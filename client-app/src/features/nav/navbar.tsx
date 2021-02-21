@@ -7,7 +7,7 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 const NavBar = () => {
 
     const rootStore = useContext(RootStoreContext);
-    const { isLoggedIn, user } = rootStore.userStore;
+    const { user, logout } = rootStore.userStore;
 
     return (
         <div>
@@ -29,21 +29,17 @@ const NavBar = () => {
                             content='Create Activity'
                         />
                     </Menu.Item>
-
                     {user &&
-
                         <Menu.Item position='right'>
                             <Image avatar spaced='right' src={user.image || '/assets/user.png'} />
                             <Dropdown pointing='top left' text={user.displayName}>
                                 <Dropdown.Menu>
                                     <Dropdown.Item as={Link} to={`/profile/username`} text='My profile' icon='user' />
-                                    <Dropdown.Item text='Logout' icon='power' />
+                                    <Dropdown.Item onClick={logout} text='Logout' icon='power' />
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Menu.Item>
-
                     }
-
                 </Container>
             </Menu>
         </div>

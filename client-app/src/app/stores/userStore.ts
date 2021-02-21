@@ -31,11 +31,17 @@ export default class UserStre {
             runInAction(() => {
                 this.user = user;
             });
-
-            history.push('/activities')
+            this.rootStore.commonStore.setToken(user.token);
+            history.push('/activities');
 
         } catch (error) {
             throw error;
         }
+    }
+
+    logout = () => {
+        this.rootStore.commonStore.setToken(null);
+        this.user = null;
+        history.push('/');
     }
 }
