@@ -1,0 +1,41 @@
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { IUser, IUserFormValues } from "../../models/user";
+import agent from "../api/agent";
+import { RootStore } from './rootStore';
+import { history } from '../..';
+
+export default class UserStre {
+
+    rootStore: RootStore;
+
+    constructor(rootStore: RootStore) {
+        makeObservable(this, {
+            user: observable,
+            isLoggedIn: computed,
+            login: action,
+        });
+
+        this.rootStore = rootStore;
+    }
+
+    user: IUser | null = null;
+
+    get isLoggedIn() { return !!this.user }
+
+    login = async (values: IUserFormValues) => {
+
+        try {
+            const user = await agent.User.login(values);
+
+            // NB! Whenever setting an observable, it must be done inside of an action!
+            runInAction(() => {
+                this.user = user;
+            });
+
+            history.push('/activities')
+
+        } catch (error) {
+            throw error;
+        }
+    }
+}

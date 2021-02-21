@@ -8,6 +8,7 @@ import ActivityDetailesHeader from './ActivityDetailesHeader'
 import { ActivityDetailesSidebar } from './ActivityDetailesSidebar'
 import { ActivityDetailsChat } from './ActivityDetailsChat'
 import { ActivityDetailsInfo } from './ActivityDetailsInfo'
+import { RootStoreContext } from '../../../app/stores/rootStore'
 
 
 interface DatailParams {
@@ -16,7 +17,8 @@ interface DatailParams {
 
 const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, history }) => {
 
-    const { activity, loadActivity, loadingInitial } = useContext(ActivityStore);
+    const rootStore = useContext(RootStoreContext);
+    const { activity, loadActivity, loadingInitial } = rootStore.activityStore;
 
     useEffect(() => {
         loadActivity(match.params.id);

@@ -53,8 +53,6 @@ namespace Application.User
 
                 if (result.Succeeded)
                 {
-                    // todo: generat user token
-
                     return new User
                     {
                         DisplayName = user.DisplayName,

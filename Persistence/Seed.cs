@@ -11,7 +11,7 @@ namespace Persistence
     {
         public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
-            if (!userManager.Users.Any())
+            if (!userManager.Users.Any()) //131, 444
             {
                 var users = new List<AppUser>{
                     new AppUser
@@ -22,21 +22,21 @@ namespace Persistence
                     },
                     new AppUser
                     {
-                        DisplayName = "Adrian",
-                        UserName = "Adrian",
-                        Email = "adrian@yahoo.co.uk"
+                        DisplayName = "Bob",
+                        UserName = "bob",
+                        Email = "bob@test.com"
                     },
                     new AppUser
                     {
-                        DisplayName = "Sophie",
-                        UserName = "Sophie",
-                        Email = "sophie@yahoo.co.uk"
+                        DisplayName = "Jane",
+                        UserName = "jane",
+                        Email = "jane@test.com"
                     }
                 };
 
                 foreach (var user in users)
                 {
-                    await userManager.CreateAsync(user, "Pa$$0rd");
+                    await userManager.CreateAsync(user, "Pa$$w0rd");
                 }
 
             }

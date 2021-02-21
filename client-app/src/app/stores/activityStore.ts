@@ -1,13 +1,14 @@
-import { createContext, SyntheticEvent } from 'react';
-import { action, configure, makeObservable, runInAction, computed, observable } from 'mobx';
+import { SyntheticEvent } from 'react';
+import { action, makeObservable, runInAction, computed, observable } from 'mobx';
 import { IActivity } from '../../models/activity';
-import Activities from '../api/agent';
+import agent from '../api/agent';
 import { history } from '../..';
 import { toast } from 'react-toastify';
+import { RootStore } from './rootStore';
 
-configure({ enforceActions: 'always' });
+export default class ActivityStore {
 
-class ActivityStore {
+    rootStore: RootStore
 
     activityRegistry = new Map();
     activity: IActivity | null = null;
@@ -15,7 +16,7 @@ class ActivityStore {
     submitting = false;
     target: string = '';
 
-    constructor() {
+    constructor(rootStore: RootStore) {
         makeObservable(this, {
             activityRegistry: observable,
             activity: observable,
@@ -30,6 +31,8 @@ class ActivityStore {
             openCreateForm: action,
             clearActivity: action
         });
+
+        this.rootStore = rootStore;
     }
 
     get activitiesByDate() {
@@ -55,7 +58,7 @@ class ActivityStore {
     loadActivities = async () => {
         this.loadingInitial = true;
         try {
-            const activities = await Activities.list();
+            const activities = await agent.Activities.list();
             runInAction(() => {
                 activities.forEach((activity) => {
                     activity.date = new Date(activity.date);
@@ -84,7 +87,7 @@ class ActivityStore {
 
             try {
 
-                activity = await Activities.details(id);
+                activity = await agent.Activities.details(id);
                 runInAction(() => {
                     activity.date = new Date(activity.date);
                     this.activity = activity;
@@ -114,7 +117,7 @@ class ActivityStore {
     createActivity = async (activity: IActivity) => {
         this.submitting = true;
         try {
-            await Activities.create(activity);
+            await agent.Activities.create(activity);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
                 this.submitting = false;
@@ -143,7 +146,7 @@ class ActivityStore {
     editActivity = async (activity: IActivity) => {
         this.submitting = true;
         try {
-            await Activities.update(activity);
+            await agent.Activities.update(activity);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
                 this.activity = activity;
@@ -163,7 +166,7 @@ class ActivityStore {
         this.submitting = true;
         this.target = event.currentTarget.name;
         try {
-            await await Activities.delete(id);
+            await await agent.Activities.delete(id);
             runInAction(() => {
                 this.activityRegistry.delete(id);
                 this.submitting = false;
@@ -178,5 +181,3 @@ class ActivityStore {
         }
     }
 }
-
-export default createContext(new ActivityStore());
