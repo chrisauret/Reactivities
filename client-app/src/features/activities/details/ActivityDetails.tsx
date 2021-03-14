@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 import { Grid } from 'semantic-ui-react'
-import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
 import { LoadingComponent } from '../../../app/layout/LoadingComponent'
@@ -9,7 +8,6 @@ import { ActivityDetailesSidebar } from './ActivityDetailesSidebar'
 import { ActivityDetailsChat } from './ActivityDetailsChat'
 import { ActivityDetailsInfo } from './ActivityDetailsInfo'
 import { RootStoreContext } from '../../../app/stores/rootStore'
-
 
 interface DatailParams {
     id: string

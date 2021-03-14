@@ -2,7 +2,7 @@ import { FORM_ERROR } from 'final-form';
 import React, { useContext } from 'react'
 import { Form as FinalForm, Field } from 'react-final-form';
 import { combineValidators, isRequired } from 'revalidate';
-import { Form, Button, Label, Header } from 'semantic-ui-react';
+import { Form, Button, Header } from 'semantic-ui-react';
 import { ErrorMessage } from '../../app/common/form/ErrorMessage';
 import TextInput from '../../app/common/form/TextInput';
 import { RootStoreContext } from '../../app/stores/rootStore';
@@ -62,11 +62,11 @@ export const RegisterForm = () => {
                     {submitError && !dirtySinceLastSubmit && (
                         <ErrorMessage
                             error={submitError}
-                            text='Invalid email or password'
+                            text={JSON.stringify(submitError.data.errors)}
                         />
                     )}
                     <Button
-                        disabled={invalid && !dirtySinceLastSubmit || pristine}
+                        disabled={(invalid && !dirtySinceLastSubmit) || pristine}
                         loading={submitting}
                         color='teal'
                         content='Register'

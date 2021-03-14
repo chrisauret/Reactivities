@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Segment, Form, Button, Grid } from 'semantic-ui-react'
 import { ActivityFormValues } from '../../../models/activity'
-import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite'
 import { RouteComponentProps } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'

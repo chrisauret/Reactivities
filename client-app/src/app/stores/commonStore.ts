@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { RootStore } from "./rootStore";
 
 export default class CommonStore { //471
