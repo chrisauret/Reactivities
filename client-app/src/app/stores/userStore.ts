@@ -13,6 +13,7 @@ export default class UserStre {
             user: observable,
             isLoggedIn: computed,
             login: action,
+            register: action,
         });
 
         this.rootStore = rootStore;
@@ -32,6 +33,24 @@ export default class UserStre {
                 this.user = user;
             });
             this.rootStore.commonStore.setToken(user.token);
+            history.push('/activities');
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    register = async (values: IUserFormValues) => {
+
+        try {
+            const user = await agent.User.register(values);
+
+            // NB! Whenever setting an observable, it must be done inside of an action!
+            runInAction(() => {
+                this.user = user;
+            });
+            this.rootStore.commonStore.setToken(user.token);
+            this.rootStore.modalStore.closeModal();
             history.push('/activities');
 
         } catch (error) {

@@ -2,8 +2,7 @@ import { FORM_ERROR } from 'final-form';
 import React, { useContext } from 'react'
 import { Form as FinalForm, Field } from 'react-final-form';
 import { combineValidators, isRequired } from 'revalidate';
-import { Form, Button, Label, Header } from 'semantic-ui-react';
-import { ErrorMessage } from '../../app/common/form/ErrorMessage';
+import { Form, Button, Label } from 'semantic-ui-react';
 import TextInput from '../../app/common/form/TextInput';
 import { RootStoreContext } from '../../app/stores/rootStore';
 import { IUserFormValues } from '../../models/user';
@@ -13,14 +12,14 @@ const validate = combineValidators({
     password: isRequired('password')
 });
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
 
     const rootStore = useContext(RootStoreContext);
-    const { login } = rootStore.userStore;
+    const { register } = rootStore.userStore;
 
     return (
         <FinalForm
-            onSubmit={(values: IUserFormValues) => login(values).catch(error => ({
+            onSubmit={(values: IUserFormValues) => register(values).catch(error => ({
 
                 [FORM_ERROR]: error
 
@@ -29,12 +28,12 @@ export const LoginForm = () => {
             render={({
                 handleSubmit,
                 submitting,
+                form,
                 submitError,
                 invalid,
                 pristine,
                 dirtySinceLastSubmit }) => (
-                <Form onSubmit={handleSubmit} error>
-                    <Header as='h2' content='Login to Reactivities' color='teal' textAlign='center' />
+                <Form onSubmit={handleSubmit}>
                     <Field
                         name='email'
                         component={TextInput}
@@ -45,19 +44,16 @@ export const LoginForm = () => {
                         placeholder='Password'
                         type='password'
                     />
-                    {submitError && !dirtySinceLastSubmit && (
-                        <ErrorMessage
-                            error={submitError}
-                            text='Invalid email or password'
-                        />
-                    )}
+                    {submitError && !dirtySinceLastSubmit && <Label color='red' basic content={submitError.statusText} />}
+                    <br />
                     <Button
                         disabled={invalid && !dirtySinceLastSubmit || pristine}
                         loading={submitting}
-                        color='teal'
-                        content='Login'
-                        fluid
-                    />
+                        positive
+                        content='Login' />
+                    <pre>
+                        {JSON.stringify(form.getState(), null, 2)}
+                    </pre>
                 </Form>
             )}
         />
