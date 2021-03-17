@@ -37,7 +37,7 @@ const ActivityDetails: React.FC<RouteComponentProps<DatailParams>> = ({ match, h
                 <ActivityDetailsChat />
             </Grid.Column>
             <Grid.Column width={6}>
-                <ActivityDetailesSidebar />
+                <ActivityDetailesSidebar attendees={activity.attendees} />
             </Grid.Column>
         </Grid>
     )
