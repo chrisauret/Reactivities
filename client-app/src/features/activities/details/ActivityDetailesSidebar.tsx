@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite'
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { Segment, List, Item, Label, Image } from 'semantic-ui-react'
@@ -7,7 +8,7 @@ interface IProps {
     attendees: IAttendee[];
 }
 
-export const ActivityDetailesSidebar: React.FC<IProps> = ({ attendees }) => {
+const ActivityDetailesSidebar: React.FC<IProps> = ({ attendees }) => {
     return (
         <Fragment>
             <Segment
@@ -47,3 +48,5 @@ export const ActivityDetailesSidebar: React.FC<IProps> = ({ attendees }) => {
         </Fragment>
     )
 }
+
+export default observer(ActivityDetailesSidebar);

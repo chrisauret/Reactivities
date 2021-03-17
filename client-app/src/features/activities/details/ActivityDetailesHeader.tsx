@@ -1,8 +1,9 @@
 import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { Segment, Item, Header, Button, Image } from 'semantic-ui-react'
+import { RootStoreContext } from '../../../app/stores/rootStore';
 import { IActivity } from '../../../models/activity';
 
 const activityImageStyle = {
@@ -19,6 +20,9 @@ const activityImageTextStyle = {
 };
 
 const ActivityDetailesHeader: React.FC<{ activity: IActivity }> = ({ activity }) => {
+    const rootStore = useContext(RootStoreContext);
+    const { attendActivity, cancelAttendance, loading } = rootStore.activityStore;
+
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{ padding: '0' }}>
@@ -47,11 +51,14 @@ const ActivityDetailesHeader: React.FC<{ activity: IActivity }> = ({ activity })
                         Manage Event
                     </Button>
                 ) : activity.isGoing ? (
-                    <Button>Cancel attendance</Button>
+                    <Button loading={loading} onClick={cancelAttendance}>
+                        Cancel attendance
+                    </Button>
                 ) : (
-                    <Button color='teal'>Join Activity</Button>
+                    <Button loading={loading} onClick={attendActivity} color='teal'>
+                        Join Activity
+                    </Button>
                 )}
-
             </Segment>
         </Segment.Group>
     )
