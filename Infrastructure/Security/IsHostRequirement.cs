@@ -24,10 +24,10 @@ namespace Infrastructure.Security // 491
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsHostRequirement requirement)
         {
             var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?
-            .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
             var activityId = Guid.Parse(_httpContextAccessor.HttpContext.Request.RouteValues
-            .SingleOrDefault(x => x.Key == "id").Value.ToString());
+                .SingleOrDefault(x => x.Key == "id").Value.ToString());
 
             var activity = _context.Activities.FindAsync(activityId).Result;
 
