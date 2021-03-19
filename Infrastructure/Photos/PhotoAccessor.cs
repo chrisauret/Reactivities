@@ -10,12 +10,12 @@ namespace Infrastructure.Photos
 {
     public class PhotoAccessor : IPhotoAccessor //506
     {
-        private readonly Cloudinary _coudinary;
+        private readonly Cloudinary _cloudinary;
         public PhotoAccessor(IOptions<CloudinarySettings> config)
         {
             var account = new Account(config.Value.CloudName, config.Value.ApiKey, config.Value.ApiSecret);
 
-            _coudinary = new Cloudinary(account);
+            _cloudinary = new Cloudinary(account);
         }
 
         public PhotoUploadResult AddPhoto(IFormFile file)
@@ -32,7 +32,7 @@ namespace Infrastructure.Photos
                         Transformation = new Transformation().Height(300).Width(500)
                             .Crop("fill").Gravity("face")
                     };
-                    uploadResult = _coudinary.Upload(uploadParams);
+                    uploadResult = _cloudinary.Upload(uploadParams);
                 }
             }
             if (uploadResult.Error != null)
@@ -47,9 +47,13 @@ namespace Infrastructure.Photos
             };
         }
 
-        public string DeletePhoto(int publicId)
+        public string DeletePhoto(string publicId)
         {
-            throw new System.NotImplementedException();
+            var deleteParams = new DeletionParams(publicId);
+
+            var result = _cloudinary.Destroy(deleteParams);
+
+            return result.Result == "ok" ? result.Result : null;
         }
     }
 }
