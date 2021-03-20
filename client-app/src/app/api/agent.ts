@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify';
 import { history } from '../..';
 import { IActivity } from '../../models/activity';
+import { IProfile } from '../../models/profile';
 import { IUser, IUserFormValues } from '../../models/user';
 
 axios.defaults.baseURL = 'https://localhost:5001/api';
@@ -16,7 +17,7 @@ axios.interceptors.request.use((config) => {
 
 axios.interceptors.response.use(undefined, error => {
 
-    if (error.message = 'Network Error' && !error.response) {
+    if (error.message === 'Network Error' && !error.response) {
         toast.error('Network error: Check API');
     }
 
@@ -66,7 +67,12 @@ const User = { //464
     register: (user: IUserFormValues): Promise<IUser> => requests.post('/user/register', user),
 }
 
+const Profiles = {
+    get: (username: string): Promise<IProfile> => requests.get(`/profles/${username}`)
+}
+
 export default {
     Activities,
-    User
+    User,
+    Profiles
 };

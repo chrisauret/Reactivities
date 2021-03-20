@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Item, Button, Segment, Icon, Label, List } from 'semantic-ui-react';
+import { Item, Button, Segment, Icon, Label } from 'semantic-ui-react';
 import { IActivity } from '../../../models/activity';
 import { format } from 'date-fns'
 import { ActivityListItemAttendees } from './ActivityListItemAttendees';
