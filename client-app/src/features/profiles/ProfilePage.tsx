@@ -1,9 +1,8 @@
 import React from 'react'
+import ProfileHeader from './ProfileHeader'
 
 export const ProfilePage = () => {
     return (
-        <div>
-            <h1> Profile Page</h1>
-        </div>
+        <ProfileHeader />
     )
 }
