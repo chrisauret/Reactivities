@@ -11,12 +11,14 @@ namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<List<ActivityDto>> { };
+        public class Query : IRequest<List<ActivityDto>>
+        {
+
+        };
 
         public class Handler : IRequestHandler<Query, List<ActivityDto>>
         {
             private readonly DataContext _context;
-
             private readonly IMapper _mapper;
 
             public Handler(DataContext context, IMapper mapper)

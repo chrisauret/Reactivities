@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Item, Button, Segment, Icon, Label } from 'semantic-ui-react';
+import { Item, Button, Segment, Icon, Label, List } from 'semantic-ui-react';
 import { IActivity } from '../../../models/activity';
 import { format } from 'date-fns'
 import { ActivityListItemAttendees } from './ActivityListItemAttendees';
@@ -12,10 +12,10 @@ export const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }
             <Segment>
                 <Item.Group>
                     <Item >
-                        <Item.Image size='tiny' circular src={host.image || '/assets/user.png'} />
+                        <Item.Image size='tiny' circular src={host.image || '/assets/user.png'} style={{ marginBottom: 3 }} />
                         <Item.Content>
                             <Item.Header as={Link} to={`/activities/${activity.id}`}>{activity.title}</Item.Header>
-                            <Item.Description>Hosted by {host.displayName}</Item.Description>
+                            <Item.Description>Hosted by<Link to={`/profile/${host.username}`}> {host.displayName}</Link></Item.Description>
                             {activity.isHost &&
                                 <Item.Description>
                                     <Label
