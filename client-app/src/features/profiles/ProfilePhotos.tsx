@@ -14,7 +14,9 @@ const ProfilePhotos = () => { //520
     return (
         <Tab.Pane>
             <Header icon='image' content='Photos' />
-            <Button floated='right' basic content={addPhotoMode ? 'Cancel' : 'Add Photo'} />
+            {isCurrentUser &&
+                <Button floated='right' basic content={addPhotoMode ? 'Cancel' : 'Add Photo'} />
+            }
             <Card.Group itemsPerRow={5} >
                 {profile && profile.photos.map((photo) => (
                     < Card key={photo.id} >
