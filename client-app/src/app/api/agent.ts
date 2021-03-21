@@ -68,7 +68,7 @@ const User = { //464
 }
 
 const Profiles = {
-    get: (username: string): Promise<IProfile> => requests.get(`/profles/${username}`)
+    get: (username: string): Promise<IProfile> => requests.get(`/profiles/${username}`)
 }
 
 export default {

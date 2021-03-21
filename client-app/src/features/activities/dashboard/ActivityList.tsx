@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import React, { Fragment, useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { Item, Label } from 'semantic-ui-react'
 import { RootStoreContext } from '../../../app/stores/rootStore'
 import { ActivityListItem } from './ActivityListItem'
