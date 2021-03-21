@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Card, Header, Tab, Image, Button, Grid } from 'semantic-ui-react';
+import { PhotoUploadWidget } from '../../app/common/photoUpload/PhotoUploadWidget';
 import { RootStoreContext } from '../../app/stores/rootStore';
 
 const ProfilePhotos = () => { //520
@@ -7,7 +8,7 @@ const ProfilePhotos = () => { //520
     const rootStore = useContext(RootStoreContext);
     const { profile, isCurrentUser } = rootStore.profileStore;
 
-    const [addPhotoMode, setAddPhotoMode] = useState(false);
+    const [addPhotoMode, setAddPhotoMode] = useState(true);
 
     return (
         <Tab.Pane>
@@ -25,7 +26,7 @@ const ProfilePhotos = () => { //520
                 </Grid.Column>
                 <Grid.Column width={16}>
                     {addPhotoMode ? (
-                        <p>Photo widget appears here</p>
+                        <PhotoUploadWidget />
                     ) : (
                         <Card.Group itemsPerRow={5} >
                             {profile && profile.photos.map((photo) => (
