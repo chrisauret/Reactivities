@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react';
 import { Header, Grid } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
+import PhotoWidgetDropzone from './PhotoWidgetDropzone';
 
 export const PhotoUploadWidget = () => (
     <Fragment>
         <Grid>
             <Grid.Column width={4}>
                 <Header color='teal' sub content='Step 1 - Add Photo' />
+                <PhotoWidgetDropzone />
             </Grid.Column>
             <Grid.Column width={1} />
             <Grid.Column width={4}>
