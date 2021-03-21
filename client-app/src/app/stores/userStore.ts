@@ -46,7 +46,6 @@ export default class UserStre {
         try {
             const user = await agent.User.register(values);
 
-            // NB! Whenever setting an observable, it must be done inside of an action!
             runInAction(() => {
                 this.user = user;
             });
