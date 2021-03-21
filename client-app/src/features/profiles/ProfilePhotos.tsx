@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
-import { Card, Header, Tab, Image, Button } from 'semantic-ui-react';
+import React, { useContext, useState } from 'react'
+import { Card, Header, Tab, Image, Button, Grid } from 'semantic-ui-react';
 import { RootStoreContext } from '../../app/stores/rootStore';
 
 const ProfilePhotos = () => { //520
@@ -9,22 +9,41 @@ const ProfilePhotos = () => { //520
 
     const [addPhotoMode, setAddPhotoMode] = useState(false);
 
-    console.log({ profile });
-
     return (
         <Tab.Pane>
-            <Header icon='image' content='Photos' />
-            {isCurrentUser &&
-                <Button floated='right' basic content={addPhotoMode ? 'Cancel' : 'Add Photo'} />
-            }
-            <Card.Group itemsPerRow={5} >
-                {profile && profile.photos.map((photo) => (
-                    < Card key={photo.id} >
-                        <Image src={photo.url} />
-                    </Card>
-                ))}
-            </Card.Group>
+            <Grid>
+                <Grid.Column width={16} style={{ paddingBottom: 0 }}>
+                    <Header floated='left' icon='image' content='Photos' />
+                    {isCurrentUser &&
+                        <Button
+                            floated='right'
+                            basic
+                            content={addPhotoMode ? 'Cancel' : 'Add Photo'}
+                            onClick={() => setAddPhotoMode(!addPhotoMode)}
+                        />
+                    }
+                </Grid.Column>
+                <Grid.Column width={16}>
+                    {addPhotoMode ? (
+                        <p>Photo widget appears here</p>
+                    ) : (
+                        <Card.Group itemsPerRow={5} >
+                            {profile && profile.photos.map((photo) => (
+                                < Card key={photo.id} >
+                                    <Image src={photo.url} />
+                                    {isCurrentUser &&
+                                        <Button.Group fluid widths={2}>
+                                            <Button basic positive content='main' />
+                                            <Button basic negative icon='trash' />
+                                        </Button.Group>
+                                    }
+                                </Card>
+                            ))}
+                        </Card.Group>
+                    )}
 
+                </Grid.Column>
+            </Grid>
         </Tab.Pane >
     )
 }
