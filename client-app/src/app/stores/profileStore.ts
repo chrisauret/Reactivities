@@ -14,7 +14,9 @@ export default class ProfileStore {
             profile: observable,
             loadingProfile: observable,
             loadProfile: action,
-            isCurrentUser: computed
+            isCurrentUser: computed,
+            uploadPhoto: action,
+            uploadingPhoto: observable
         });
     }
 
