@@ -7,7 +7,7 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 const ProfilePhotos = () => { //520
 
     const rootStore = useContext(RootStoreContext);
-    const { profile, isCurrentUser, uploadPhoto, uploadingPhoto } = rootStore.profileStore;
+    const { profile, isCurrentUser, uploadPhoto, uploadingPhoto, setMainPhoto, loading } = rootStore.profileStore;
 
     const [addPhotoMode, setAddPhotoMode] = useState(true);
 
@@ -39,7 +39,12 @@ const ProfilePhotos = () => { //520
                                     <Image src={photo.url} />
                                     {isCurrentUser &&
                                         <Button.Group fluid widths={2}>
-                                            <Button basic positive content='main' />
+                                            <Button
+                                                onClick={() => setMainPhoto(photo)}
+                                                loading={loading}
+                                                basic
+                                                positive
+                                                content='main' />
                                             <Button basic negative icon='trash' />
                                         </Button.Group>
                                     }
