@@ -1,4 +1,5 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { toast } from "react-toastify";
 import { IProfile } from "../../models/profile";
 import agent from "../api/agent";
 import { RootStore } from "./rootStore";
@@ -19,6 +20,7 @@ export default class ProfileStore {
 
     profile: IProfile | null = null;
     loadingProfile = true;
+    uploadingPhoto = false;
 
     get isCurrentUser() {
         if (this.rootStore.userStore.user && this.profile) {
@@ -39,6 +41,28 @@ export default class ProfileStore {
             runInAction(() => {
                 this.loadingProfile = false;
                 console.log(error);
+            })
+        }
+    }
+
+    uploadPhoto = async (file: Blob) => {
+        this.uploadingPhoto = true;
+        try {
+            const photo = await agent.Profiles.uploadPhoto(file);
+            runInAction(() => {
+                if (this.profile) {
+                    this.profile.photos.push(photo);
+                    if (photo.isMain && this.rootStore.userStore.user) {
+                        this.rootStore.userStore.user.image = photo.url;
+                        this.profile.image = photo.url;
+                    }
+                }
+            })
+        } catch (error) {
+            console.log(error);
+            toast.error('Probelm uploading file');
+            runInAction(() => {
+                this.uploadingPhoto = true;
             })
         }
     }
