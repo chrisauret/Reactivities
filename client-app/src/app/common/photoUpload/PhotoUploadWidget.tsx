@@ -1,10 +1,15 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Header, Grid } from 'semantic-ui-react';
+import { Header, Grid, Button } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
 import PhotoWidgetDropzone from './PhotoWidgetDropzone';
 import { PhotoWidgetCropper } from './PhotoWidgetCropper';
 
-export const PhotoUploadWidget = () => {
+interface IProps {
+    loading: boolean;
+    uploadPhoto: (file: Blob) => void;
+}
+
+export const PhotoUploadWidget: React.FC<IProps> = ({ loading, uploadPhoto }) => {
 
     const [files, setFiles] = useState<any>([]); // This state will be passed down 523
     const [image, setImage] = useState<Blob | null>(null);
@@ -33,7 +38,22 @@ export const PhotoUploadWidget = () => {
                 <Grid.Column width={4}>
                     <Header sub color='teal' content='Step 3 - Preview & Upload' />
                     {files.length > 0 &&
-                        <div className='img-preview' style={{ minHeight: '200px', overflow: 'hidden' }} />
+                        <Fragment>
+                            <div className='img-preview' style={{ minHeight: '200px', overflow: 'hidden' }} />
+                            <Button.Group widths={2}>
+                                <Button
+                                    positive
+                                    icon='check'
+                                    loading={loading}
+                                    onClick={() => uploadPhoto(image!)}
+                                />
+                                <Button
+                                    icon='close'
+                                    disabled={loading}
+                                    onClick={() => setFiles([])}
+                                />
+                            </Button.Group>
+                        </Fragment>
                     }
                 </Grid.Column>
             </Grid>
