@@ -9,7 +9,8 @@ const ProfilePhotos = () => { //520
     const rootStore = useContext(RootStoreContext);
     const { profile, isCurrentUser, uploadPhoto, uploadingPhoto, setMainPhoto, loading } = rootStore.profileStore;
 
-    const [addPhotoMode, setAddPhotoMode] = useState(true);
+    const [addPhotoMode, setAddPhotoMode] = useState(false);
+    const [target, setTarget] = useState<string | undefined>(undefined);
 
     const handleUploadImage = (photo: Blob) => {
         uploadPhoto(photo).then(() => setAddPhotoMode(false))
@@ -40,8 +41,12 @@ const ProfilePhotos = () => { //520
                                     {isCurrentUser &&
                                         <Button.Group fluid widths={2}>
                                             <Button
-                                                onClick={() => setMainPhoto(photo)}
-                                                loading={loading}
+                                                name={photo.id}
+                                                onClick={(e) => {
+                                                    setMainPhoto(photo)
+                                                    setTarget(e.currentTarget.name)
+                                                }}
+                                                loading={loading && target === photo.id}
                                                 basic
                                                 positive
                                                 content='main' />
