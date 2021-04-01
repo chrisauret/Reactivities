@@ -7,10 +7,19 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 const ProfilePhotos = () => { //520
 
     const rootStore = useContext(RootStoreContext);
-    const { profile, isCurrentUser, uploadPhoto, uploadingPhoto, setMainPhoto, loading } = rootStore.profileStore;
+    const {
+        profile,
+        isCurrentUser,
+        uploadPhoto,
+        uploadingPhoto,
+        setMainPhoto,
+        deletePhoto,
+        loading,
+    } = rootStore.profileStore;
 
     const [addPhotoMode, setAddPhotoMode] = useState(false);
     const [target, setTarget] = useState<string | undefined>(undefined);
+    const [deleteTarget, setDeleteTarget] = useState<string | undefined>(undefined);
 
     const handleUploadImage = (photo: Blob) => {
         uploadPhoto(photo).then(() => setAddPhotoMode(false))
@@ -46,11 +55,22 @@ const ProfilePhotos = () => { //520
                                                     setMainPhoto(photo)
                                                     setTarget(e.currentTarget.name)
                                                 }}
+                                                disabled={photo.isMain}
                                                 loading={loading && target === photo.id}
                                                 basic
                                                 positive
                                                 content='main' />
-                                            <Button basic negative icon='trash' />
+                                            <Button
+                                                name={photo.id}
+                                                onClick={(e) => {
+                                                    deletePhoto(photo)
+                                                    setDeleteTarget(e.currentTarget.name)
+                                                }}
+                                                loading={loading && deleteTarget === photo.id}
+                                                disabled={photo.isMain}
+                                                basic
+                                                negative
+                                                icon='trash' />
                                         </Button.Group>
                                     }
                                 </Card>

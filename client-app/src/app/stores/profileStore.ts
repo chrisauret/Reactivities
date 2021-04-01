@@ -87,4 +87,21 @@ export default class ProfileStore {
             })
         }
     }
+
+    deletePhoto = async (photo: IPhoto) => {
+        this.loading = true;
+        try {
+            await agent.Profiles.deletePhoto(photo.id);
+            runInAction(() => {
+                this.profile!.photos = this.profile!.photos.filter(x => x.id !== photo.id);
+                this.loading = false;
+            })
+        } catch (error) {
+            console.log(error);
+            toast.error('Problem deleting photo');
+            runInAction(() => {
+                this.loading = true;
+            })
+        }
+    }
 }
