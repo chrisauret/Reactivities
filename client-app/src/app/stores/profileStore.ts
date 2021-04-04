@@ -104,4 +104,19 @@ export default class ProfileStore {
             })
         }
     }
+
+    updateProfile = async (profile: Partial<IProfile>) => {
+        try {
+            await agent.Profiles.update(profile);
+            runInAction(() => {
+                if (profile.displayName !== this.rootStore.userStore.user!.displayName) {
+                    this.rootStore.userStore.user!.displayName = profile.displayName!;
+                }
+                this.profile = { ...this.profile!, ...profile };
+            })
+        } catch (error) {
+            console.log(error);
+            toast.error('problem editing profile')
+        }
+    }
 }

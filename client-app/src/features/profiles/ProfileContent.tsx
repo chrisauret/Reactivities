@@ -1,9 +1,10 @@
 import React from 'react'
 import { Tab } from 'semantic-ui-react'
+import { ProfileDescription } from './ProfileDescription'
 import ProfilePhotos from './ProfilePhotos'
 
 const panes = [
-    { menuItem: 'About', render: () => <Tab.Pane>About content</Tab.Pane> },
+    { menuItem: 'About', render: () => <ProfileDescription /> },
     { menuItem: 'Photos', render: () => <ProfilePhotos /> },
     { menuItem: 'Events', render: () => <Tab.Pane>Events content</Tab.Pane> },
     { menuItem: 'Followers', render: () => <Tab.Pane>Followers content</Tab.Pane> },
@@ -16,7 +17,7 @@ export const ProfileContent = () => {
             menu={{ fluid: true, vertical: true }}
             menuPosition='right'
             panes={panes}
-            activeIndex={1}
+        // activeIndex={0}
         />
     )
 }

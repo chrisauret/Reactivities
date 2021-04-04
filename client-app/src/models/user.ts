@@ -6,7 +6,7 @@ export interface IUser {
 }
 
 export interface IUserFormValues {
-    emai: string,
+    email: string,
     password: string;
     displayName?: string;
     username?: string;

@@ -24,7 +24,6 @@ namespace Application.Profiles
                 public CommandValidator()
                 {
                     RuleFor(x => x.DisplayName).NotEmpty();
-                    RuleFor(x => x.Bio).NotEmpty();
                 }
             }
 
@@ -49,8 +48,8 @@ namespace Application.Profiles
                         throw new RestException(HttpStatusCode.NotFound, new { user = "Not found" });
                     }
 
-                    user.DisplayName = request.DisplayName;
-                    user.Bio = request.Bio;
+                    user.DisplayName = request.DisplayName ?? user.DisplayName;
+                    user.Bio = request.Bio ?? user.Bio;
 
                     var success = await _context.SaveChangesAsync() > 0;
 
