@@ -49,18 +49,12 @@ namespace Application.Followers
                         x => x.Observer.Id == observer.Id
                         && x.Target.Id == target.Id);
 
-                if (following != null)
-                    throw new RestException(HttpStatusCode.BadRequest, new { User = "You are already following this user" });
-
                 if (following == null)
-                {
-                    following = new UserFollowing
-                    {
-                        Observer = observer,
-                        Target = target
-                    };
+                    throw new RestException(HttpStatusCode.BadRequest, new { User = "You are not following this user" });
 
-                    _context.Followings.Add(following);
+                if (following != null)
+                {
+                    _context.Followings.Remove(following);
                 }
 
                 var success = await _context.SaveChangesAsync() > 0;
