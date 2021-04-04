@@ -26,13 +26,8 @@ namespace Infrastructure.Security // 491
             var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?
                 .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-
-            var theGuid = _httpContextAccessor.HttpContext.Request.RouteValues
-                .SingleOrDefault(x => x.Key == "id").Value.ToString();
-
-            System.Console.WriteLine("theGuid:" + theGuid);
-
-            var activityId = Guid.Parse(theGuid);
+            var activityId = Guid.Parse(_httpContextAccessor.HttpContext.Request.RouteValues
+            .SingleOrDefault(x => x.Key == "id").Value.ToString());
 
             var activity = _context.Activities.FindAsync(activityId).Result;
 
