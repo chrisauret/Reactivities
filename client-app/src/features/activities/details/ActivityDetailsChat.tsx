@@ -5,6 +5,7 @@ import { Form as FinalForm, Field } from 'react-final-form';
 import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import TextAreaInput from '../../../app/common/form/TextAreaInput';
+import { formatDistance } from 'date-fns';
 
 const ActivityDetailsChat = () => {
     const rootStore = useContext(RootStoreContext);
@@ -41,7 +42,7 @@ const ActivityDetailsChat = () => {
                             <Comment.Content>
                                 <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
                                 <Comment.Metadata>
-                                    <div>{comment.createdAt}</div>
+                                    <div>{formatDistance(new Date(comment.createdAt), new Date())}</div>
                                 </Comment.Metadata>
                                 <Comment.Text>{comment.body}</Comment.Text>
                             </Comment.Content>
