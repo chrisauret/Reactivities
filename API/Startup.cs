@@ -52,7 +52,8 @@ namespace API
                                      builder
                                         .AllowAnyMethod()
                                         .AllowAnyHeader()
-                                        .WithOrigins("http://localhost:3000").AllowCredentials();
+                                        .WithOrigins("http://localhost:3000")
+                                        .AllowCredentials();
                                  });
            });
             // services.AddResponseCaching();

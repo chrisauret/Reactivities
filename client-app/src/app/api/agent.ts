@@ -5,7 +5,7 @@ import { IActivity } from '../../models/activity';
 import { IPhoto, IProfile } from '../../models/profile';
 import { IUser, IUserFormValues } from '../../models/user';
 
-axios.defaults.baseURL = 'https://localhost:5001/api';
+axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.request.use((config) => {
     const token = window.localStorage.getItem('jwt');
@@ -82,8 +82,10 @@ const Profiles = {
     update: (profile: Partial<IProfile>) => requests.put('/profiles', profile)
 }
 
-export default {
+const agent = {
     Activities,
     User,
     Profiles
 };
+
+export default agent;

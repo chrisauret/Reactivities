@@ -44,7 +44,7 @@ export default class ActivityStore {
 
     createHubConnection = () => {
         this.hubConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:/chat', {
+            .withUrl('http://localhost:5000/chat', {
                 accessTokenFactory: () => this.rootStore.commonStore.token!
             })
             .configureLogging(LogLevel.Warning)
@@ -62,6 +62,16 @@ export default class ActivityStore {
 
     stopHubConnection = () => {
         this.hubConnection!.stop();
+    }
+
+    addComment = async (values: any) => {
+        values.activityId = this.activity!.id
+
+        try {
+            await this.hubConnection!.invoke("SendComment", values);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     get activitiesByDate() {
