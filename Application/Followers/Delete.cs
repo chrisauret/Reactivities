@@ -11,11 +11,11 @@ using Persistence;
 
 namespace Application.Followers
 {
-    public class Add //551
+    public class Delete //550
     {
         public class Command : IRequest
         {
-            // The username of the user to follow
+            // The username of the user to unfollow
             public string Username { get; set; }
         }
 
@@ -49,12 +49,18 @@ namespace Application.Followers
                         x => x.Observer.Id == observer.Id
                         && x.Target.Id == target.Id);
 
-                if (following == null)
-                    throw new RestException(HttpStatusCode.BadRequest, new { User = "You are not following this user" });
-
                 if (following != null)
+                    throw new RestException(HttpStatusCode.BadRequest, new { User = "You are already following this user" });
+
+                if (following == null)
                 {
-                    _context.Followings.Remove(following);
+                    following = new UserFollowing
+                    {
+                        Observer = observer,
+                        Target = target
+                    };
+
+                    _context.Followings.Add(following);
                 }
 
                 var success = await _context.SaveChangesAsync() > 0;
