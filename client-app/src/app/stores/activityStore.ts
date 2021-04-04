@@ -6,6 +6,7 @@ import { history } from '../..';
 import { toast } from 'react-toastify';
 import { RootStore } from './rootStore';
 import { createAttendee, setActivityProps } from '../common/util/util';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 export default class ActivityStore {
 
@@ -17,6 +18,7 @@ export default class ActivityStore {
     loading = false;
     submitting = false;
     target: string = '';
+    hubConnection: HubConnection | null = null; //541
 
     constructor(rootStore: RootStore) {
         makeObservable(this, {
@@ -38,6 +40,28 @@ export default class ActivityStore {
         });
 
         this.rootStore = rootStore;
+    }
+
+    createHubConnection = () => {
+        this.hubConnection = new HubConnectionBuilder()
+            .withUrl('http://localhost:/chat', {
+                accessTokenFactory: () => this.rootStore.commonStore.token!
+            })
+            .configureLogging(LogLevel.Warning)
+            .build();
+
+        this.hubConnection
+            .start()
+            .then(() => console.log(this.hubConnection!.state))
+            .catch((error) => console.log('Error establishing connection: ', error));
+
+        this.hubConnection.on("ReceiveComment", comment => {
+            this.activity!.comments.push(comment);
+        })
+    };
+
+    stopHubConnection = () => {
+        this.hubConnection!.stop();
     }
 
     get activitiesByDate() {
