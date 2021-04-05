@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/profile")]
+    [Route("api/profiles")]
     public class FollowersController : BaseController
     {
         [HttpPost("{username}/follow")]
@@ -25,7 +25,7 @@ namespace API.Controllers
         [HttpGet("{username}/follow")]
         public async Task<ActionResult<List<Profile>>> GetFollowings(string username, string predicate)
         {
-            return await Mediator.Send(new List.Query{Username = username, Predicate = predicate});
+            return await Mediator.Send(new List.Query { Username = username, Predicate = predicate });
         }
     }
 }
