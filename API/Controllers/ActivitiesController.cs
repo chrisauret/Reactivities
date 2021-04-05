@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Application.Activities;
-using Domain;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
@@ -13,9 +11,9 @@ namespace API.Controllers
     {
         [HttpGet]
         [HttpOptions]
-        public async Task<ActionResult<List<ActivityDto>>> List()
+        public async Task<ActionResult<List.ActivitiesEnvelope>> List(int? limit, int? offset)
         {
-            return await Mediator.Send(new List.Query());
+            return await Mediator.Send(new List.Query(limit, offset));
         }
 
         [HttpGet("{id}")]
