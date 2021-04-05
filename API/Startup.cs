@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Infrastructure.Photos;
 using API.SignalR;
 using System.Threading.Tasks;
+using Application.Profiles;
 
 namespace API
 {
@@ -119,6 +120,7 @@ namespace API
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IProfileReader, ProfileReader>();
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
         }
 
