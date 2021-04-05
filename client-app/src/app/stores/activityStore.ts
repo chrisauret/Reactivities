@@ -1,5 +1,5 @@
 import { SyntheticEvent } from 'react';
-import { action, makeObservable, reaction, runInAction, computed, observable } from 'mobx';
+import { reaction, runInAction, makeAutoObservable } from 'mobx';
 import { IActivity } from '../../models/activity';
 import agent from '../api/agent';
 import { history } from '../..';
@@ -14,6 +14,21 @@ const LIMIT = 2;
 export default class ActivityStore {
 
     rootStore: RootStore
+
+    constructor(rootStore: RootStore) {
+        makeAutoObservable(this);
+
+        this.rootStore = rootStore;
+
+        reaction(
+            () => this.predicate.keys(),
+            () => {
+                this.page = 0;
+                this.activityRegistry.clear();
+                this.loadActivities();
+            }
+        )
+    }
 
     activityRegistry = new Map();
     activity: IActivity | null = null;
@@ -35,13 +50,13 @@ export default class ActivityStore {
 
     get axiosParams() {
         const params = new URLSearchParams();
-        params.append('limit', LIMIT.toString());
+        params.append('limit', String(LIMIT));
         params.append('offset', `${this.page ? this.page * LIMIT : 0}`);
         this.predicate.forEach((value, key) => {
             if (key === 'startDate') {
-                params.append(key, value.toISOString());
+                params.append(key, value.toISOString())
             } else {
-                params.append(key, value);
+                params.append(key, value)
             }
         })
         return params;
@@ -55,36 +70,7 @@ export default class ActivityStore {
         this.page = page;
     }
 
-    constructor(rootStore: RootStore) {
-        makeObservable(this, {
-            activityRegistry: observable,
-            activity: observable,
-            loadingInitial: observable,
-            loading: observable,
-            submitting: observable,
-            target: observable,
-            activitiesByDate: computed,
-            editActivity: observable,
-            loadActivities: action,
-            createActivity: action,
-            deleteActivity: action,
-            openCreateForm: action,
-            clearActivity: action,
-            attendActivity: action,
-            cancelAttendance: action
-        });
 
-        this.rootStore = rootStore;
-
-        reaction(
-            () => this.predicate.keys(),
-            () => {
-                this.page = 0;
-                this.activityRegistry.clear();
-                this.loadActivities();
-            }
-        )
-    }
 
     createHubConnection = (activityId: string) => {
         this.hubConnection = new HubConnectionBuilder()

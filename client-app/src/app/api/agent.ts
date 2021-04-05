@@ -84,7 +84,8 @@ const Profiles = {
     update: (profile: Partial<IProfile>) => requests.put('/profiles', profile),
     follow: (username: string) => requests.post(`/profiles/${username}/follow`, {}),
     unfollow: (username: string) => requests.del(`/profiles/${username}/follow`),
-    listFollowings: (username: string, predicate: string) => requests.get(`/profiles/${username}/follow?predicate=${predicate}`)
+    listFollowings: (username: string, predicate: string) => requests.get(`/profiles/${username}/follow?predicate=${predicate}`),
+    listActivites: (username: string, predicate: string) => requests.get(`/profiles/${username}/activities?predicate=${predicate}`)
 }
 
 const agent = {

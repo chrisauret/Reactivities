@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { toast } from "react-toastify";
-import { IPhoto, IProfile } from "../../models/profile";
+import { IPhoto, IProfile, IUserActivity } from "../../models/profile";
 import agent from "../api/agent";
 import { RootStore } from "./rootStore";
 
@@ -32,12 +32,34 @@ export default class ProfileStore {
     loading = false;
     followings: IProfile[] = [];
     activeTab: number = 0;
+    userActivities: IUserActivity[] = [];
+    loadingActivities: boolean = false;
 
     get isCurrentUser() {
         if (this.rootStore.userStore.user && this.profile) {
             return this.rootStore.userStore.user.username === this.profile.username;
         }
         return false;
+    }
+
+    loadUserActivities = async (username: string, predicate?: string) => {
+        this.loadingActivities = true;
+
+        try {
+            const activities = await agent.Profiles.listActivites(username, predicate!);
+
+            runInAction(() => {
+                this.userActivities = activities;
+                this.loadingActivities = false;
+            })
+
+        } catch (error) {
+            toast.error('Problem loading activities');
+            runInAction(() => {
+                this.loadingActivities = false;
+            })
+        }
+
     }
 
     setActiveTab = (activeIndex: number) => {
@@ -80,9 +102,9 @@ export default class ProfileStore {
             })
         } catch (error) {
             console.log(error);
-            toast.error('Probelm uploading file');
+            toast.error('Problem uploading file');
             runInAction(() => {
-                this.uploadingPhoto = true;
+                this.uploadingPhoto = false;
             })
         }
     }
