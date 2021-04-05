@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { toast } from "react-toastify";
 import { IPhoto, IProfile } from "../../models/profile";
 import agent from "../api/agent";
@@ -10,6 +10,19 @@ export default class ProfileStore {
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
 
+        reaction(
+            () => this.activeTab,
+            activeTab => {
+                if (activeTab === 3 || activeTab === 4) {
+                    this.followings = [];
+                    const predicate = activeTab === 3 ? 'followers' : 'following';
+                    this.loadFollowings(predicate);
+                } else {
+                    this.followings = [];
+                }
+            }
+        )
+
         makeAutoObservable(this);
     }
 
@@ -17,12 +30,18 @@ export default class ProfileStore {
     loadingProfile = true;
     uploadingPhoto = false;
     loading = false;
+    followings: IProfile[] = [];
+    activeTab: number = 0;
 
     get isCurrentUser() {
         if (this.rootStore.userStore.user && this.profile) {
             return this.rootStore.userStore.user.username === this.profile.username;
         }
         return false;
+    }
+
+    setActiveTab = (activeIndex: number) => {
+        this.activeTab = activeIndex;
     }
 
     loadProfile = async (username: string) => {
@@ -155,4 +174,22 @@ export default class ProfileStore {
             })
         }
     }
+
+    loadFollowings = async (predicate: string) => {
+        this.loading = true;
+        try {
+            const profiles = await agent.Profiles.listFollowings(this.profile!.username, predicate);
+            runInAction(() => {
+                this.followings = profiles;
+                this.loading = false;
+            })
+        } catch (error) {
+            toast.error('Problem loading  followings');
+            runInAction(() => {
+                this.loading = true;
+            })
+        }
+    }
+
+
 }
