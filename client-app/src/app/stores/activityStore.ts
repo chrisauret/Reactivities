@@ -8,6 +8,8 @@ import { RootStore } from './rootStore';
 import { createAttendee, setActivityProps } from '../common/util/util';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
+const LIMIT = 2;
+
 export default class ActivityStore {
 
     rootStore: RootStore
@@ -19,6 +21,16 @@ export default class ActivityStore {
     submitting = false;
     target: string = '';
     hubConnection: HubConnection | null = null; //541
+    activityCount = 0;
+    page = 0;
+
+    get totalPages() {
+        return Math.ceil(this.activityCount / LIMIT)
+    }
+
+    setPage = (page: number) => {
+        this.page = page;
+    }
 
     constructor(rootStore: RootStore) {
         makeObservable(this, {
@@ -111,12 +123,14 @@ export default class ActivityStore {
     loadActivities = async () => {
         this.loadingInitial = true;
         try {
-            const activities = await agent.Activities.list();
+            const activitiesEnvelope = await agent.Activities.list(LIMIT, this.page);
+            const { activities, activityCount } = activitiesEnvelope;
             runInAction(() => {
                 activities.forEach((activity) => {
                     setActivityProps(activity, this.rootStore.userStore.user!);
                     this.activityRegistry.set(activity.id, activity);
                 });
+                this.activityCount = activityCount;
                 this.loadingInitial = false;
             });
             console.log(this.groupActivitiesByDate(activities));
