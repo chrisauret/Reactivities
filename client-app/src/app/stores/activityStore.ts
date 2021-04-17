@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { RootStore } from './rootStore';
 import { createAttendee, setActivityProps } from '../common/util/util';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { URLSearchParams } from 'url';
+
 
 const LIMIT = 2;
 
